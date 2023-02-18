@@ -1,0 +1,20 @@
+.buttonWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  position: absolute;
+  border: solid;
+  bottom: .5%;
+  width: 90%;
+  height: 6%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  /* align-items: stretch; */
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+
+.visible {
+  opacity: 1;
+}
