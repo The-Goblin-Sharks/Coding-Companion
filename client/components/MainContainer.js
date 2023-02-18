@@ -13,8 +13,11 @@ function MainContainer(props) {
 	const [popupToRender, setPopupToRender] = useState('Nothing');
 	const handleMenuClick = (event) => {
 		console.log('clicked in main container', event.target.id);
-    
-		setPopupToRender(event.target.id);
+		if(event.target.id === popupToRender) {
+			setPopupToRender('Nothing');
+		} else {
+			setPopupToRender(event.target.id);
+		}
 	};
 
 	return(
