@@ -20,6 +20,8 @@ app.use(express.urlencoded( {extended: true} ));
 
 app.get('/', gameRouter)
 
+app.use('/inventory', gameRouter)
+
 //server index html
 app.get('/', (req, res) => {
     return res.status(200).sendFile(path.resolve(__dirname, '../client/index.html'));

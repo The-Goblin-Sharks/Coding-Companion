@@ -16,12 +16,11 @@ userController.signup = async (req, res, next) => {
     const usernameCheckQuery = 'SELECT * FROM users WHERE users.username = $1'
     const checkUsername = await db.query(usernameCheckQuery, usernameCheckValue);
     if (checkUsername.rows.length > 0) {
-      res.locals.userIsTaken = true;
-      return next();
+      return next({log: 'Username is taken', message : {err: 'Username is taken'}});
     }
     const hashedPassword = await bcrypt.hash(password, SALT_WORK_FACTOR); // this autogenerates the salt and returns the hashed password in one function
-    const values = [username, hashedPassword, leetcodeUsername, false, 0];
-    const queryString = 'INSERT INTO users(username, password, leetcodeusername, isadmin, currency) VALUES($1, $2, $3, $4, $5) RETURNING *;';
+    const values = [username, hashedPassword, leetcodeUsername, false, 0, 0, 0, 0];
+    const queryString = 'INSERT INTO users(username, password, leetcodeusername, isadmin, currency, easycount, medcount, hardcount) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;';
     const data = await db.query(queryString, values);
     res.locals.currentUser = data.rows[0];
     console.log(res.locals.currentUser);
@@ -39,9 +38,9 @@ userController.login = async (req, res, next) => {
     const usernameCheckQuery = 'SELECT * FROM users WHERE users.username = $1;';
     const user = await db.query(usernameCheckQuery, usernameCheckValue);
     console.log(user);
-    const passwordIsInvalid = !await bcrypt.compare(password, user.rows[0].password);  // will return false if password matches
-    if (!passwordIsInvalid) res.locals.currentUser = user.rows[0];
-    res.locals.passwordIsInvalid = passwordIsInvalid;
+    const passwordIsValid = await bcrypt.compare(password, user.rows[0].password);  // will return false if password matches
+    if (!passwordIsValid) return next({log: 'Password is invalid.', message : {err: 'Password is invalid.'}})
+    res.locals.currentUser = user.rows[0];
     return next(); 
   } catch (err) {
     return next(err);
@@ -49,10 +48,44 @@ userController.login = async (req, res, next) => {
 };
 
 userController.updateStats = async (req, res, next) => {
-  console.log('updateStats function is running')
-  const leetCodeQuery = 'SELECT * FROM users WHERE users.username = $1'
-  const leetCodeData = await db.query(leetCodeQuery);
+  try {
+    const problemDiff = {
+      easy: res.locals.currentStats[1].count - res.locals.currentUser.easycount, 
+      medium: res.locals.currentStats[2].count - res.locals.currentUser.medcount,
+      hard: res.locals.currentStats[3].count - res.locals.currentUser.hardcount
+    };
+    res.locals.problemDiff = problemDiff;
+    const values = [problemDiff.easy + res.locals.currentUser.easycount, problemDiff.medium + res.locals.currentUser.medcount, problemDiff.hard + res.locals.currentUser.hardcount, res.locals.currentUser.username];
+    const queryString = 'UPDATE users SET easycount = $1, medcount = $2, hardcount = $3 WHERE username = $4 RETURNING *;';
+    const data = await db.query(queryString, values);
+    res.locals.currentUser = data.rows[0];
+    return next();
+  } catch (err) {
+    return next(err);
+  }
 };
+
+userController.gainCurrency = async (req, res, next) => {
+  try {
+    let gainedCurrency = 0;
+    const converter = {
+      easy: 1,
+      medium: 3,
+      hard: 10,
+    }
+    for (const key in res.locals.problemDiff) {
+      gainedCurrency += converter[key] * res.locals.problemDiff[key]; // converter amount multiplied by new problems solved
+    }
+    const values = [gainedCurrency + res.locals.currentUser.currency, res.locals.currentUser.username];
+    const queryString = 'UPDATE users SET currency = $1 WHERE username = $2 RETURNING *;'
+    const data = await db.query(queryString, values);
+    res.locals.currentUser = data.rows[0];
+    res.locals.gainedCurrency = gainedCurrency;
+    return next();
+  } catch(err) {
+    return next(err);
+  }
+}
 
 
 userController.admin = (req, res, next) => {
@@ -63,36 +96,3 @@ userController.admin = (req, res, next) => {
 
 module.exports = userController;
 
-
-/*
-const SALT_WORK_FACTOR = 10;
-const bcrypt = require('bcryptjs');
-
-const userSchema = new Schema({
-  username: {type: String, required: true, unique: true},
-  password: {type: String, required: true}
-});
-
-userSchema.pre('save', function(next){
-  var user = this;
-
-  if (!user.isModified('password')) return next();
-
-  bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt){
-    if(err) return next(err);
-
-    bcrypt.hash(user.password, salt, function(err,hash){
-      if (err) return next(err);
-      user.password = hash;
-      next();
-    })
-  })
-});
-
-userSchema.methods.comparePassword = function(userPassword, cb){
-  bcrypt.compare(userPassword, this.password, function(err, match){
-    if (err) return cb(err);
-    cb(null, match);
-  })
-}
-*/

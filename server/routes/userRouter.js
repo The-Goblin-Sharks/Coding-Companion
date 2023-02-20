@@ -5,8 +5,9 @@ const userController = require('../controllers/userControllers.js');
 const leetcodeController = require('../controllers/leetcodeController');
 
 
-router.get('/login/:username&:password', userController.login, leetcodeController.getUpdatedStats, (req, res) => {
-	res.status(200).json(res.locals.passwordIsInvalid);
+router.get('/login/:username&:password', userController.login, leetcodeController.getUpdatedStats, userController.updateStats, userController.gainCurrency, (req, res) => {
+	res.status(200).json({problemDiff : res.locals.problemDiff, currentUser : res.locals.currentUser, gainedCurrency : res.locals.gainedCurrency});
+	// send gained currency, send problemdiff, send updated userinfo
 });
 // { password: res.locals.passwordIsValid,
 // leetCodeStats: res.locals.leetCodeStats }
@@ -15,13 +16,8 @@ router.get('/login/:username&:password', userController.login, leetcodeControlle
 // 	res.send(200).json(res.locals.adminProfile);
 // });
 
-router.get('/leetcode', leetcodeController.getUpdatedStats, (req, res) => {
-  res.status(200).json(res.locals.submitStats);
-});
-
-router.post('/signup', userController.signup, (req, res) => {
-	if (res.locals.userIsTaken) res.status(200).send('User is taken.');
-	res.status(200).json(res.locals.currentUser);
+router.post('/signup', userController.signup, leetcodeController.getUpdatedStats, userController.updateStats, userController.gainCurrency, (req, res) => {
+	res.status(200).json({problemDiff : res.locals.problemDiff, currentUser : res.locals.currentUser, gainedCurrency : res.locals.gainedCurrency});
 })
 
 

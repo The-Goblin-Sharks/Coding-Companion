@@ -1,7 +1,6 @@
 const leetcodeController = {};
 
 leetcodeController.getUpdatedStats = async (req, res, next) => {  
-  if (res.locals.userIsTaken || res.locals.passwordIsInvalid) return next();
 	const leetcodeUsername = res.locals.currentUser.leetcodeusername;
 	const myHeaders = new Headers();
 	myHeaders.append('Content-Type', 'application/json');
@@ -17,12 +16,14 @@ leetcodeController.getUpdatedStats = async (req, res, next) => {
 		body: graphql,
 		redirect: 'follow'
 	};
-  
-	const response = await fetch('https://leetcode.com/graphql\n\n', requestOptions);
-	const data = await response.json();
-	res.locals.currentStats = data.data.matchedUser.submitStats.acSubmissionNum;
-  console.log(res.locals.currentStats);
-	return next();
+	try {
+		const response = await fetch('https://leetcode.com/graphql\n\n', requestOptions);
+		const data = await response.json();
+		res.locals.currentStats = data.data.matchedUser.submitStats.acSubmissionNum;
+		return next();
+	} catch (err) {
+		return next(err);
+	}
 };
 
 module.exports = leetcodeController;
