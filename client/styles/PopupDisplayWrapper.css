@@ -12,12 +12,12 @@
   height: 20%;
   left: 50%;
   transform: translate(-50%, 0);
-  background-color: rgb(132, 118, 15);
+  background-color: rgba(132, 118, 15, .6);
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
 }
 
 
 .visible {
-    opacity: 60%;
+  opacity: 1;
 }
