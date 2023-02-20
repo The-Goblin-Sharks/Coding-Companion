@@ -23,7 +23,6 @@ userController.signup = async (req, res, next) => {
     const queryString = 'INSERT INTO users(username, password, leetcodeusername, isadmin, currency, easycount, medcount, hardcount) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;';
     const data = await db.query(queryString, values);
     res.locals.currentUser = data.rows[0];
-    console.log(res.locals.currentUser);
     return next();
   } catch (err) {
     return next(err);
