@@ -10,17 +10,17 @@ module.exports = {
 			filename: 'index.html',
 		}),
 	],
-	entry: '/client/main.js',
+	entry: '/client/index.js',
 	output: {
 		path: path.resolve(__dirname, 'build'),
 		publicPath: '/',
 		filename: 'bundle.js',
 	},
 	devServer: {
-		proxy: {
-			'/**' :'http://localhost:3000',
-			'/build' : 'http://localhost:3000',
-		},
+		// proxy: {
+		// 	'/**' :'http://localhost:3000',
+		// 	'/build' : 'http://localhost:3000',
+		// },
 		compress: true,
 		port: 8080,
 		historyApiFallback: true,
@@ -43,9 +43,9 @@ module.exports = {
 				use: ['style-loader', 'css-loader'],
 			},
 			{
-				test: /\.png|svg|jpg|gif$/,
-				use: ['file-loader'],
-			},
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
+      },
 		],
 	},
 };

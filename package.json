@@ -7,6 +7,7 @@
     "start": "NODE_ENV=production node server/server.js ",
     "build": "NODE_ENV=production webpack",
     "dev": "concurrently \"NODE_ENV=development webpack serve --open\" \"NODE_ENV=development nodemon ./server/server.js\"",
+    "front": "NODE_ENV=development webpack serve --open",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -39,6 +40,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "devDependencies": {
+    "bcrypt": "^5.1.0",
     "eslint": "^8.34.0",
     "eslint-plugin-react": "^7.32.2"
   }
