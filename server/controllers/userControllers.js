@@ -12,12 +12,17 @@ userController.signup = async (req, res, next) => {
   // this req.body should contain the user's username and password
   try {
     const {username, password, leetcodeUsername} = req.body;
+    // checks for valid leetcode username
+    const leetcodeUsernameCheck = await fetch(`https://leetcode.com/${leetcodeUsername}`);
+    if (leetcodeUsernameCheck.status === 404) return next({log: 'Leetcode username is invalid', message : {err: 'Leetcode username is invalid. Please sign up with valid Leetcode username.'}});
+    // checks for if username is already taken
     const usernameCheckValue = [username];
-    const usernameCheckQuery = 'SELECT * FROM users WHERE users.username = $1'
+    const usernameCheckQuery = 'SELECT * FROM users WHERE users.username = $1;'
     const checkUsername = await db.query(usernameCheckQuery, usernameCheckValue);
     if (checkUsername.rows.length > 0) {
-      return next({log: 'Username is taken', message : {err: 'Username is taken'}});
+      return next({log: 'Username is taken', message : {err: 'Username is taken. Please try signing up with a different username.'}});
     }
+    // hashes password and inserts new user into database
     const hashedPassword = await bcrypt.hash(password, SALT_WORK_FACTOR); // this autogenerates the salt and returns the hashed password in one function
     const values = [username, hashedPassword, leetcodeUsername, false, 0, 0, 0, 0];
     const queryString = 'INSERT INTO users(username, password, leetcodeusername, isadmin, currency, easycount, medcount, hardcount) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;';
@@ -36,9 +41,8 @@ userController.login = async (req, res, next) => {
     const usernameCheckValue = [username];
     const usernameCheckQuery = 'SELECT * FROM users WHERE users.username = $1;';
     const user = await db.query(usernameCheckQuery, usernameCheckValue);
-    console.log(user);
     const passwordIsValid = await bcrypt.compare(password, user.rows[0].password);  // will return false if password matches
-    if (!passwordIsValid) return next({log: 'Password is invalid.', message : {err: 'Password is invalid.'}})
+    if (!passwordIsValid || user.rows.length === 0) return next({log: 'Username or password is invalid', message : {err: 'Username or password is invalid. Please login with a valid username and password.'}})
     res.locals.currentUser = user.rows[0];
     return next(); 
   } catch (err) {
@@ -46,6 +50,7 @@ userController.login = async (req, res, next) => {
   }
 };
 
+// this middleware gets the difference in problems solved between last session and current session
 userController.updateStats = async (req, res, next) => {
   try {
     const problemDiff = {
@@ -64,6 +69,7 @@ userController.updateStats = async (req, res, next) => {
   }
 };
 
+// this middleware calculates currency gained based on the problems solved since last session
 userController.gainCurrency = async (req, res, next) => {
   try {
     let gainedCurrency = 0;
@@ -86,11 +92,11 @@ userController.gainCurrency = async (req, res, next) => {
   }
 }
 
-
-userController.admin = (req, res, next) => {
-  res.locals.adminProfile = 'success';
-  return next()
-}
+// create a function that registers an admin user
+// userController.admin = (req, res, next) => {
+//   res.locals.adminProfile = 'success';
+//   return next()
+// }
 
 
 module.exports = userController;

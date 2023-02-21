@@ -1,5 +1,6 @@
 const leetcodeController = {};
 
+// this middleware reaches out to leetcode's graphql database to populate userinfo
 leetcodeController.getUpdatedStats = async (req, res, next) => {  
 	const leetcodeUsername = res.locals.currentUser.leetcodeusername;
 	const myHeaders = new Headers();

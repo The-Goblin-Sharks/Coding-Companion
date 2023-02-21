@@ -7,16 +7,16 @@ const { post } = require('../server');
 const gameController = {};
 
 gameController.load = async (req, res, next) => {
-  res.locals.initialLoad = []
+  res.locals.initialLoad = {}
 try {
   const backgroundResponse = await db.query('SELECT * FROM background')
-  res.locals.initialLoad.push(backgroundResponse.rows);
+  res.locals.initialLoad.backgrounds = backgroundResponse.rows;
   const toyResponse = await db.query('SELECT * FROM food')
-  res.locals.initialLoad.push(toyResponse.rows);
+  res.locals.initialLoad.toys = toyResponse.rows;
   const foodResponse = await db.query('SELECT * FROM toys')
-  res.locals.initialLoad.push(foodResponse.rows);
+  res.locals.initialLoad.food = foodResponse.rows;
   const petResponse = await db.query('SELECT * FROM pet_type')
-  res.locals.initialLoad.push(petResponse.rows);
+  res.locals.initialLoad.pets = petResponse.rows;
   return next();
   } catch (error) {
     console.log(error);
@@ -61,7 +61,7 @@ gameController.addInventory = async (req, res, next) => {
 
   let postConstructor = {}
 
-  console.log('body type: ', req.body.type)
+  console.log('req.body: ', req.body)
 
   if(req.body.type === 'food') {
     postConstructor = {
@@ -69,7 +69,7 @@ gameController.addInventory = async (req, res, next) => {
       toy_stat: 0,
       food_stat: req.body.food_stat,
       type:'food',
-      file_id: req.body.id,
+      file_id: req.body.file_id,
       user_id: req.params.id
     }
   } else if(req.body.type === 'background') {
@@ -78,7 +78,7 @@ gameController.addInventory = async (req, res, next) => {
       toy_stat: 0,
       food_stat: 0,
       type: 'background',
-      file_id: req.body.id,
+      file_id: req.body.file_id,
       user_id: req.params.id
     } 
   } else if(req.body.type === 'toy') {
@@ -114,6 +114,7 @@ try {
       log: 'gameController.populateInventory',
       message: 'check log for error'
     }
+    console.error(error);
     next(err);
   }
 };

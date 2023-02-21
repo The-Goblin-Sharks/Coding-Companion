@@ -1,5 +1,5 @@
 
-import React, {useState, Fragment} from 'react';
+import React, {useState, Fragment, useEffect	} from 'react';
 import '../styles/MainContainer.css';
 import ButtonWrapper from './ButtonWrapper.js';
 import PopupDisplayWrapper from './PopupDisplayWrapper.js';
@@ -12,7 +12,27 @@ function MainContainer(props) {
 
 	// let popupToRender = 'Nothing';
 	const [popupToRender, setPopupToRender] = useState('Nothing');
-	const [isLoggedIn, setIsLoggedIn] = useState(true);
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [userInfo, setUserInfo] = useState(null);
+	const [userInventory, setUserInventory] = useState(null);
+	
+
+	useEffect(function() {
+		if (!userInfo) return;
+		async function getInventory() {
+			let response = await fetch(`/inventory/${userInfo.currentUser.user_id}`);
+			let inventory = await response.json();
+			console.log('logged in inventory: ', inventory);
+			setUserInventory(inventory);
+		}
+		try{
+			getInventory();
+		} catch (error) {
+			console.error(error);
+		}
+	}, [isLoggedIn]);
+
+	
 	const handleMenuClick = (event) => {
 		console.log('clicked in main container', event.target.id);
 		if(event.target.id === popupToRender) {
@@ -21,17 +41,28 @@ function MainContainer(props) {
 			setPopupToRender(event.target.id);
 		}
 	};
-
+	
 	return(
 		<div className="mainContainer">
-			{isLoggedIn ? <Fragment>
-				<button onClick={() => setIsLoggedIn(!isLoggedIn)}>render login</button>
-				<Pet/>
+			{isLoggedIn && userInfo && userInventory ? <Fragment>				
 				<ButtonWrapper handleClick={handleMenuClick} />
-				<PopupDisplayWrapper popupToRender={popupToRender} /> 
-			</Fragment> : <LoginWrapper setLoggedIn={setIsLoggedIn} />}
+				<PopupDisplayWrapper
+					userInfo={userInfo}
+					popupToRender={popupToRender}
+					userInventory={userInventory}
+				/> 
+				<Pet 
+					userInventory={userInventory}
+				/>
+			</Fragment> : <LoginWrapper setUserInfo={setUserInfo} setLoggedIn={setIsLoggedIn}/>}
 		</div>
 	); 
+
 }
 
+
+
+
 export default MainContainer;
+
+{/* <Component {...props}/> */}
