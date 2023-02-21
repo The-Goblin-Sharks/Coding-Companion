@@ -12,11 +12,25 @@ function MainContainer(props) {
 
 	// let popupToRender = 'Nothing';
 	const [popupToRender, setPopupToRender] = useState('Nothing');
-	const [isLoggedIn, setIsLoggedIn] = useState(true);
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [userInfo, setUserInfo] = useState(null);
+	const [userInventory, setUserInventory] = useState(null);
 	
-	console.log(userInfo);
 
+	useEffect(function() {
+		if (!userInfo) return;
+		async function getInventory() {
+			let response = await fetch(`/inventory/${userInfo.currentUser.user_id}`);
+			let inventory = await response.json();
+			console.log('logged in inventory: ', inventory);
+			setUserInventory(inventory);
+		}
+		try{
+			getInventory();
+		} catch (error) {
+			console.error(error);
+		}
+	}, [isLoggedIn]);
 
 	
 	const handleMenuClick = (event) => {
@@ -27,25 +41,27 @@ function MainContainer(props) {
 			setPopupToRender(event.target.id);
 		}
 	};
-
+	
 	return(
 		<div className="mainContainer">
-			{isLoggedIn ? <Fragment>
-				<button onClick={() => setIsLoggedIn(!isLoggedIn)}>render login</button>
-				<Pet 
-					
-				/>
+			{isLoggedIn && userInfo && userInventory ? <Fragment>				
 				<ButtonWrapper handleClick={handleMenuClick} />
 				<PopupDisplayWrapper
 					userInfo={userInfo}
 					popupToRender={popupToRender}
-
-					// {...userInventory}//whatever we are going to call this
+					userInventory={userInventory}
 				/> 
-			</Fragment> : <LoginWrapper setUserInfo={setUserInfo} setLoggedIn={setIsLoggedIn} />}
+				<Pet 
+					userInventory={userInventory}
+				/>
+			</Fragment> : <LoginWrapper setUserInfo={setUserInfo} setLoggedIn={setIsLoggedIn}/>}
 		</div>
 	); 
+
 }
+
+
+
 
 export default MainContainer;
 

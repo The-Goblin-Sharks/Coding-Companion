@@ -6,17 +6,18 @@ import '../styles/Signup.css'
 function Login(props) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordIsInvalid, setPasswordIsInvalid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const submitFormHandler = async(e) => {
     e.preventDefault();
     const data = await fetch(`/user/login/${username}&${password}`);
     const userData = await data.json();
     if (userData.err) {
-      setPasswordIsInvalid(true);
+      setErrorMessage(userData.err);
       return;
     }
     props.setUserInfo(userData);
+    props.setLoggedIn(true);
   }
 
   const formSwitchHandler = e => {
@@ -26,9 +27,12 @@ function Login(props) {
   return <form className='loginForm' onSubmit={submitFormHandler}>
     <label>Username: <input type='text' id='username' name='username' onChange={(e) => setUsername(e.target.value)} required className="signup-input"></input></label>
     <label>Password: <input type='password' id='password' name='password' onChange={(e) => setPassword(e.target.value)} required className="signup-input"></input></label>
-    <button type='submit' className="signup-button">Login</button>
-    {passwordIsInvalid && <p style={{color: 'red'}}>Username or password is incorrect</p>}
-    <p>Don't have an account? Create an account <a onClick={formSwitchHandler}>here.</a></p>
+    <button
+      type='submit' 
+      className="signup-button"
+    >Login</button>
+    {errorMessage && <p style={{color: 'red'}}>{errorMessage}</p>}
+    <p>Don't have an account? Create an account <a onClick={formSwitchHandler} className="switch-forms">here.</a></p>
   </form>
 }
 

@@ -105,3 +105,4 @@ dist
 
 #new thing
 package-lock.json
+.DS_Store

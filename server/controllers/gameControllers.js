@@ -61,7 +61,7 @@ gameController.addInventory = async (req, res, next) => {
 
   let postConstructor = {}
 
-  console.log('body type: ', req.body.type)
+  console.log('req.body: ', req.body)
 
   if(req.body.type === 'food') {
     postConstructor = {
@@ -69,7 +69,7 @@ gameController.addInventory = async (req, res, next) => {
       toy_stat: 0,
       food_stat: req.body.food_stat,
       type:'food',
-      file_id: req.body.id,
+      file_id: req.body.file_id,
       user_id: req.params.id
     }
   } else if(req.body.type === 'background') {
@@ -78,7 +78,7 @@ gameController.addInventory = async (req, res, next) => {
       toy_stat: 0,
       food_stat: 0,
       type: 'background',
-      file_id: req.body.id,
+      file_id: req.body.file_id,
       user_id: req.params.id
     } 
   } else if(req.body.type === 'toy') {
@@ -114,6 +114,7 @@ try {
       log: 'gameController.populateInventory',
       message: 'check log for error'
     }
+    console.error(error);
     next(err);
   }
 };

@@ -30,11 +30,14 @@
     height: 100%;
     /* align-items: center; */
     text-align: center;
-    margin-bottom: 10%;
+    margin-bottom: 5%;
 }
 .menuSection h2 {
     border-bottom: 3px solid black;
 }
+
+/* STORE */
+
 .items{
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -43,7 +46,6 @@
   /* align-self: center; */
   justify-items: center;
 }
-
 .food img {
     height: 60%;
     width: 50%;
@@ -63,4 +65,19 @@
     background-color: red;
     /* height: 50px;
     width: 50px; */
+}
+/* petStats */
+.stats {
+    list-style-type: none;
+    margin-top: 2%;
+}
+
+.stats li {
+    margin-top: 2%;
+    font-size: 1.2rem;
+}
+
+section > p {
+    margin-top: 0;
+    margin-bottom: 0;
 }
