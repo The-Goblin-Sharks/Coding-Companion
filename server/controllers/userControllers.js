@@ -36,9 +36,8 @@ userController.login = async (req, res, next) => {
     const usernameCheckValue = [username];
     const usernameCheckQuery = 'SELECT * FROM users WHERE users.username = $1;';
     const user = await db.query(usernameCheckQuery, usernameCheckValue);
-    console.log(user);
     const passwordIsValid = await bcrypt.compare(password, user.rows[0].password);  // will return false if password matches
-    if (!passwordIsValid) return next({log: 'Password is invalid.', message : {err: 'Password is invalid.'}})
+    if (!passwordIsValid || user.rows.length === 0) return next({log: 'Username or password is invalid', message : {err: 'Username or password is invalid.'}})
     res.locals.currentUser = user.rows[0];
     return next(); 
   } catch (err) {

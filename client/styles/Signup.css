@@ -1,0 +1,40 @@
+/* font-family: 'Shadows Into Light' */
+
+/* thomas styles */
+.loginForm {
+    width: 30%;
+    height: 50%;
+    background-color: white;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* my styling */
+    padding-top: 20px;
+    text-align: center;
+    font-family: sans-serif;
+  }
+
+  /* my styles */
+.signup-form{
+    height: 50vh;
+    width: 30vw;
+    background-color: white;
+    text-align: center;
+    padding-top: 20px;
+    font-family: sans-serif;
+    border-radius: 5px;
+}
+
+.signup-input{
+    width: 80%;
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.signup-button{
+    padding: 10px;
+    border-radius: 10px;
+}

@@ -1,5 +1,5 @@
 
-import React, {useState, Fragment} from 'react';
+import React, {useState, Fragment, useEffect	} from 'react';
 import '../styles/MainContainer.css';
 import ButtonWrapper from './ButtonWrapper.js';
 import PopupDisplayWrapper from './PopupDisplayWrapper.js';
@@ -13,6 +13,12 @@ function MainContainer(props) {
 	// let popupToRender = 'Nothing';
 	const [popupToRender, setPopupToRender] = useState('Nothing');
 	const [isLoggedIn, setIsLoggedIn] = useState(true);
+	const [userInfo, setUserInfo] = useState(null);
+	
+	console.log(userInfo);
+
+
+	
 	const handleMenuClick = (event) => {
 		console.log('clicked in main container', event.target.id);
 		if(event.target.id === popupToRender) {
@@ -26,12 +32,21 @@ function MainContainer(props) {
 		<div className="mainContainer">
 			{isLoggedIn ? <Fragment>
 				<button onClick={() => setIsLoggedIn(!isLoggedIn)}>render login</button>
-				<Pet/>
+				<Pet 
+					
+				/>
 				<ButtonWrapper handleClick={handleMenuClick} />
-				<PopupDisplayWrapper popupToRender={popupToRender} /> 
-			</Fragment> : <LoginWrapper setLoggedIn={setIsLoggedIn} />}
+				<PopupDisplayWrapper
+					userInfo={userInfo}
+					popupToRender={popupToRender}
+
+					// {...userInventory}//whatever we are going to call this
+				/> 
+			</Fragment> : <LoginWrapper setUserInfo={setUserInfo} setLoggedIn={setIsLoggedIn} />}
 		</div>
 	); 
 }
 
 export default MainContainer;
+
+{/* <Component {...props}/> */}

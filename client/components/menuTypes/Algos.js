@@ -7,6 +7,11 @@ function Algos(props) {
 	return(
 		<div className="popupDisplay">
 			<h1>{name}</h1>
+			<ul>
+				<li>Easy:</li>
+				<li>Medium:</li>
+				<li>Hard:</li>
+			</ul>
 		</div>
 	); 
 }

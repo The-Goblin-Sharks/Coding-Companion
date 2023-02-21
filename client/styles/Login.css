@@ -1,0 +1,9 @@
+.loginForm {
+  width: 30%;
+  height: 50%;
+  background-color: white;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
