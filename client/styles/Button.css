@@ -1,0 +1,7 @@
+.button{
+    /* display: flex; */
+    flex-grow: 1;
+    background-color: beige;
+    opacity: 60%;
+    font-size: 2rem;
+}

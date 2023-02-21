@@ -1,0 +1,14 @@
+*{
+    font-family: 'VT323';
+}
+
+.mainContainer {
+    height: 100vh;
+    width: 100vw;
+    /* background-color: beige; */
+    background-image: url('../assets/images/FieldBackground.jpg');
+    background-position-y: 30%;
+    background-size: cover;
+    /* background-image: url('https://images.pexels.com/photos/255379/pexels-photo-255379.jpeg?auto=compress&cs=tinysrgb&w=600'); */
+    position: relative;
+}

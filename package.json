@@ -4,6 +4,10 @@
   "description": "Group Scratch Project from Codesmith with The Goblin Sharks (gamifying your coding experience)",
   "main": "webpack.config.js",
   "scripts": {
+    "start": "NODE_ENV=production nodemon server/server.js ",
+    "build": "NODE_ENV=production webpack",
+    "dev": "concurrently \"NODE_ENV=development webpack serve --open\" \"NODE_ENV=development nodemon ./server/server.js\"",
+    "front": "NODE_ENV=development webpack serve --open",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,13 +25,16 @@
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
     "babel-loader": "^9.1.2",
+    "bcryptjs": "^2.4.3",
     "concurrently": "^7.6.0",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "css-loader": "^6.7.3",
     "express": "^4.18.2",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "nodemon": "^2.0.20",
+    "pg": "^8.9.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "style-loader": "^3.3.1",
@@ -36,6 +43,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "devDependencies": {
+    "bcrypt": "^5.1.0",
     "eslint": "^8.34.0",
     "eslint-plugin-react": "^7.32.2"
   }
